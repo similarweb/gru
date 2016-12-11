@@ -66,11 +66,15 @@ Here's a very basic example of how this configuration might look like, without a
 
 ### Run using Docker
 
-Assuming you've already created a configuration file, simply run the docker image:
+Assuming you've already created a configuration file and named it `gru.yaml`, simply run the docker image:
 
-    $ docker run -d gru:latest \
-          -v $PWD/gru.yaml:/etc/gru.yaml \
-          -p 5000:5000
+    $ docker run --rm -it \
+        -v $PWD:/etc/gru \
+        -e GRU_SETTINGS=/etc/gru/gru.yaml \
+        -e "AWS_ACCESS_KEY_ID=AKXXXXXXXXXXXXXXXXXX" \  # Set this to your AWS keys
+        -e "AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+        -p 5000:5000 \
+        similarweb/gru:latest
 
 ### Where to go from here
 

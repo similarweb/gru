@@ -84,23 +84,31 @@ Please review the :ref:`Configuration Reference <configuration>` section or chec
 Running using Docker
 --------------------
 
-Assuming you already have a yaml configuration file, all we need to do is run the docker image:
+Assuming you already have a yaml configuration file named ``gru.yaml``, all we need to do is run the docker image:
 
 .. code-block:: bash
 
-    $ docker run -d gru:latest \
-          -v $PWD/gru.yaml:/etc/gru.yaml \
-          -p 5000:5000
+    $ docker run --rm -it \
+        -v $PWD:/etc/gru \
+        -e GRU_SETTINGS=/etc/gru/gru.yaml \
+        -e "AWS_ACCESS_KEY_ID=AKXXXXXXXXXXXXXXXXXX" \  # Set this to your AWS keys
+        -e "AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+        -p 5000:5000 \
+        similarweb/gru:latest
 
 If you are using custom plugins, simply mount the module directory and reflect that in your settings file:
 
 .. code-block:: bash
 
-    $ docker run -d gru:latest \
-      -v $PWD/gru.yaml:/etc/gru.yaml \
-      -v /path/to/plugins:/opt/gru-plugins \
-      -p 5000:5000
-
+    $ docker run --rm -it \
+        -v $PWD:/etc/gru \
+        -e GRU_SETTINGS=/etc/gru/gru.yaml \
+        -e "AWS_ACCESS_KEY_ID=AKXXXXXXXXXXXXXXXXXX" \  # Set this to your AWS keys
+        -e "AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" \
+        -v /path/to/plugins:/opt/gru-plugins \
+        -p 5000:5000 \
+        similarweb/gru:latest
+  
 This will automatically pull the gru image from docker hub, and run a server using the ``gru.yaml`` settings file.
 
 
