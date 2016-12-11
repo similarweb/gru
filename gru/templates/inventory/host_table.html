@@ -1,0 +1,46 @@
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <td><strong>Host</strong></td> <!-- identifier field -->
+                {% for field_name in settings.get('inventory.host_table_fields') %}
+                {% if field_name.get('field') != group_field %}
+                <td title="{{field_name.get('field')}}">
+                    <strong>{{field_name.get('title')}}</strong>
+                </td>
+                {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for host in host_list %}
+            <tr>    
+                <td>
+                    <a href="{{url_for('inventory.host_info', host_id=host.get_identifier())}}">
+                        {{host.get_display_name()}}
+                    </a>
+                </td>
+                {% for field_name in settings.get('inventory.host_table_fields') %}
+                    {% if field_name.get('type') == 'link' %}
+                        <td>
+                            <a href="{{host.field(field_name.get('field'))}}" target="_blank">
+                                {{host.field(field_name.get('field'))}}
+                            </a>
+                        </td>
+                    {% elif field_name.get('type') == 'boolean' %}
+                        <td>
+                            {% if host.field(field_name.get('field')) and not host.field(field_name.get('field')) in ('false', 'False') %}
+                                <span class="icon icon-check"></span>
+                            {% else %}
+                                <span class="icon icon-cross"></span>
+                            {% endif %}
+                        </td>
+                    {% elif field_name.get('field') != group_field %}
+                        <td>{{host.field(field_name.get('field'))}}</td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

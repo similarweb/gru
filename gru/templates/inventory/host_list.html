@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+{% if group_title and field %}
+<ol class="breadcrumb">
+	<li><a href="{{url_for('inventory.group_breakdown', group=group_field)}}">{{group_title}}</a></li>
+	<li class="active"><a href="{{url_for('inventory.host_list', group=group_field, field=field)}}">{{field}}</a></li>
+</ol>
+{% endif %}
+
+{% if host_list %}
+{% include "inventory/host_table.html" %}
+
+<!-- pagination -->
+<hr>
+<nav>
+	<ul class="pager">
+  		{% if not paginator.previous(total) %}
+    	<li class="previous disabled">
+            <a href="javascript:return false;"><span aria-hidden="true">&larr;</span> Previous</a>
+        </li>
+    	{% else %}
+    	<li class="previous">
+    		<a href="{{url_for('inventory.host_list', group=group_field, field=field, page=paginator.previous(total))}}">
+    			<span aria-hidden="true">&larr;</span>
+    			Previous
+    		</a>
+    	</li>
+		{% endif %}
+        {{total}} total results (page {{paginator.current_page}} of {{paginator.total_pages(total)}})
+		{% if not paginator.next(total) %}
+    	<li class="next disabled">
+            <a href="javascript:return false;">Next <span aria-hidden="true">&rarr;</span></a>
+        </li>
+    	{% else %}
+    	<li class="next">
+    		<a href="{{url_for('inventory.host_list', group=group_field, field=field, page=paginator.next(total))}}">
+    			Next
+    			<span aria-hidden="true">&rarr;</span>
+    		</a>
+    	</li>
+		{% endif %}
+	</ul>
+</nav>
+{% else %}
+<h3 class="text-center">No hosts found.</h3>
+{% endif %}
+
+
+{% endblock main %}

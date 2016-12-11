@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to GRU’s documentation! &#8212; gru 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="gru 0.1.0 documentation" href="#" />
+    <link rel="next" title="Quick Start" href="quickstart.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-gru-s-documentation">
+<span id="index"></span><h1>Welcome to GRU&#8217;s documentation!<a class="headerlink" href="#welcome-to-gru-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-gru">
+<h2>What is GRU?<a class="headerlink" href="#what-is-gru" title="Permalink to this headline">¶</a></h2>
+<p>GRU is a host-centric inventory management system. It is used to visualize and provide context on individual servers
+and more importantly, on groups of servers.</p>
+<p>It was designed in order to help operations teams, as well as developers to better understand their infrastructure
+and to provide a unified view of available compute resources.</p>
+<p>This is what it looks like:</p>
+<div class="figure" id="id1">
+<img alt="GRU Host breakdown by role" src="_images/gru_list.png" />
+<p class="caption"><span class="caption-text"><em>GRU Host breakdown by role</em></span></p>
+</div>
+<div class="figure" id="id2">
+<img alt="GRU Host info page" src="_images/gru_host.png" />
+<p class="caption"><span class="caption-text"><em>GRU Host info page</em></span></p>
+</div>
+</div>
+<div class="section" id="motivation">
+<h2>Motivation<a class="headerlink" href="#motivation" title="Permalink to this headline">¶</a></h2>
+<p>Understanding which compute resources exist (and which business context they serve) can be tricky.
+In many cases, this information is scattered across several systems.</p>
+<p>GRU is designed to give an accurate view of compute resources available to us.
+The main primitive in GRU is the <strong>Host</strong>. By providing different ways to slice and dice an inventory (or, collection of hosts)
+and allowing plugins to give external context regarding each host, we can better discover, understand and optimize our infrastructure.</p>
+<p>Plugins, that are at the center of GRU, are used to integrate information and actions from external systems.
+These can include monitoring, CMDB, real time metrics, cost info, service checks and more.
+By uniting all these into one place we can easily reason about our resources and provide visibility to operations and software engineers.</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#basic-configuration">Basic Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-using-docker">Running using Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#running-a-local-server">Running a local server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="inventory.html">Inventory Providers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inventory.html#configuring-an-inventory-provider">Configuring an Inventory Provider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inventory.html#elasticsearch-provider">ElasticSearch Provider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inventory.html#ec2-provider">EC2 Provider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inventory.html#writing-your-own">Writing your own</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication and Authorization</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#configuring-an-authentication-backend">Configuring an Authentication Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#dummy-authentication-backend">Dummy authentication backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#ldap-authentication-backend">LDAP authentication backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="authentication.html#writing-your-own">Writing your own</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Using plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#host-widgets">Host Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#page-plugins">Page plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugins.html#loading-plugins">Loading plugins</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="plugin_dev.html">Developing Plugins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plugin_dev.html#plugin-architecture-overview">Plugin Architecture Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_dev.html#host-widgets">Host Widgets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_dev.html#page-plugins">Page Plugins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_dev.html#inventory-providers">Inventory Providers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plugin_dev.html#authentication-backends">Authentication Backends</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#setting-up-a-settings-file">Setting up a settings file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#all-basic-configuration-parameters">All basic configuration parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#ldap-authentication-backend-configuration-parameters">LDAP authentication backend configuration parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-parameters-for-the-built-in-elasticsearch-inventory-provider">Configuration Parameters for the built-in ElasticSearch inventory provider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configuration.html#configuration-parameters-for-the-built-in-ec2-inventory-provider">Configuration Parameters for the built-in EC2 inventory provider</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#how-to-file-an-issue">How to file an issue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#how-to-contribute">How to contribute</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="roadmap.html">Road Map</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="roadmap.html#id1">0.2.0</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to GRU&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#what-is-gru">What is GRU?</a></li>
+<li><a class="reference internal" href="#motivation">Motivation</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="quickstart.html" title="next chapter">Quick Start</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SimilarWeb LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

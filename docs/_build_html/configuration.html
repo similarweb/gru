@@ -1,0 +1,398 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration Reference &#8212; gru 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="gru 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Developing Plugins" href="plugin_dev.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration-reference">
+<span id="configuration"></span><h1>Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="setting-up-a-settings-file">
+<h2>Setting up a settings file<a class="headerlink" href="#setting-up-a-settings-file" title="Permalink to this headline">¶</a></h2>
+<p>GRU is configured using a YAML settings file. see the <a class="reference internal" href="quickstart.html#quickstart"><span class="std std-ref">Quick Start</span></a> guide to see how make sure GRU picks up
+and uses the settings file we&#8217;ll be providing.</p>
+<p>At the most basic level, we need to let GRU know of the following:</p>
+<ol class="arabic simple">
+<li>Which inventory provider we want to use. EC2 and ElasticSearch come out of the box, but you can <a class="reference internal" href="plugin_dev.html#plugin-dev"><span class="std std-ref">write your own</span></a>.</li>
+<li>Which authentication backend you want to use. Dummy (no auth at all) and LDAP authentication are provided, but, again, feel free to <a class="reference internal" href="plugin_dev.html#plugin-dev"><span class="std std-ref">write your own</span></a>.</li>
+<li>How you want to display your inventory: Which metadata should be visible and where</li>
+<li>Which external plugins you want to load, including any configuration they may require</li>
+</ol>
+<p>Below is the full list of configuration parameters that GRU supports, including all the builtin plugins.
+You can check out the <code class="docutils literal"><span class="pre">examples/</span></code> directory on <a class="reference external" href="http://www.github.com/similarweb/gru">Github</a> for complete examples.</p>
+</div>
+<div class="section" id="all-basic-configuration-parameters">
+<h2>All basic configuration parameters<a class="headerlink" href="#all-basic-configuration-parameters" title="Permalink to this headline">¶</a></h2>
+<p>For brevity, nested keys will be denoted using a period (<code class="docutils literal"><span class="pre">.</span></code>) i.e.:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">foo.bar = &lt;some value&gt;</span>
+</pre></div>
+</div>
+<p>Is equivalent to the following YAML structure:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">foo</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">bar</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">&lt;some value&gt;</span>
+</pre></div>
+</div>
+<div class="section" id="flask-debug">
+<h3><code class="docutils literal"><span class="pre">flask.debug</span></code><a class="headerlink" href="#flask-debug" title="Permalink to this headline">¶</a></h3>
+<p><strong>boolean</strong> whether to start the underlying flask server in debug mode or not. This will affect
+the logging verbosity</p>
+</div>
+<div class="section" id="flask-secret-key">
+<h3><code class="docutils literal"><span class="pre">flask.secret_key</span></code><a class="headerlink" href="#flask-secret-key" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong> used to encrypt signed cookies, used by the session system. Any random value will do.</p>
+</div>
+<div class="section" id="flask-session-seconds">
+<h3><code class="docutils literal"><span class="pre">flask.session_seconds</span></code><a class="headerlink" href="#flask-session-seconds" title="Permalink to this headline">¶</a></h3>
+<p><strong>integer</strong> how long in seconds to keep user sessions.</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">604800</span></code> (7 days)</p>
+</div>
+<div class="section" id="ui-name">
+<h3><code class="docutils literal"><span class="pre">ui.name</span></code><a class="headerlink" href="#ui-name" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong> name to use in the navbar and titles.</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">GRU</span></code>.</p>
+</div>
+<div class="section" id="ui-items-per-page">
+<h3><code class="docutils literal"><span class="pre">ui.items_per_page</span></code><a class="headerlink" href="#ui-items-per-page" title="Permalink to this headline">¶</a></h3>
+<p><strong>integer</strong> how many items to show on paginated pages.</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">50</span></code>.</p>
+</div>
+<div class="section" id="ui-theme-name">
+<h3><code class="docutils literal"><span class="pre">ui.theme.name</span></code><a class="headerlink" href="#ui-theme-name" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong> name of the <a class="reference external" href="https://bootswatch.com/">Bootswatch</a> theme to use.</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">darkly</span></code>.</p>
+</div>
+<div class="section" id="ui-theme-version">
+<h3><code class="docutils literal"><span class="pre">ui.theme.version</span></code><a class="headerlink" href="#ui-theme-version" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong> <a class="reference external" href="https://bootswatch.com/">Bootswatch</a> theme version number.</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">3.3.7</span></code></p>
+</div>
+<div class="section" id="plugins-directories">
+<span id="plugin-directories"></span><h3><code class="docutils literal"><span class="pre">plugins.directories</span></code><a class="headerlink" href="#plugins-directories" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of strings</strong> list of directories that contain GRU plugins.</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">['~/.gru-plugins',</span> <span class="pre">'/opt/gru-plugins']</span></code></p>
+<p>See <a class="reference internal" href="plugins.html#loading-plugins"><span class="std std-ref">Loading plugin</span></a> for more info</p>
+</div>
+<div class="section" id="plugins-modules">
+<h3><code class="docutils literal"><span class="pre">plugins.modules</span></code><a class="headerlink" href="#plugins-modules" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of strings</strong> list of module names to import and search for plugins</p>
+<p>See <a class="reference internal" href="plugins.html#loading-plugins"><span class="std std-ref">Loading plugin</span></a> for more info</p>
+</div>
+<div class="section" id="authentication-backend">
+<span id="id1"></span><h3><code class="docutils literal"><span class="pre">authentication.backend</span></code><a class="headerlink" href="#authentication-backend" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong> class name for the authentication backend to use.</p>
+<p>Out of the box, you can use either <code class="docutils literal"><span class="pre">gru.contrib.auth.backends.LdapBackend</span></code> or <code class="docutils literal"><span class="pre">gru.contrib.auth.backends.DummyBackend</span></code>.</p>
+</div>
+<div class="section" id="inventory-provider">
+<span id="id2"></span><h3><code class="docutils literal"><span class="pre">inventory.provider</span></code><a class="headerlink" href="#inventory-provider" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong> class name of the inventory provider to use.</p>
+<p>Out of the box, you can use either <code class="docutils literal"><span class="pre">gru.contrib.inventory.providers.ElasticSearchProvider</span></code> or <code class="docutils literal"><span class="pre">gru.contrib.inventory.providers.EC2Provider</span></code>.</p>
+</div>
+<div class="section" id="inventory-group-by">
+<h3><code class="docutils literal"><span class="pre">inventory.group_by</span></code><a class="headerlink" href="#inventory-group-by" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of dictionaries</strong></p>
+<p>Describes the list of Host attributes to group the inventory by. This is used by the host breakdown screens.
+Common fields to group hosts by may include: data center (or AWS region), environment, role and operating system.</p>
+<p>Each dictionary should provide at least the <code class="docutils literal"><span class="pre">field</span></code> key, which corresponds to a Host attribute name, and an optional
+<code class="docutils literal"><span class="pre">title</span></code> key which will be used by the UI to give this field a human readable name.</p>
+<p>Example:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">inventory</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">group_by</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">os</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Operating System</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dc</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Data Center</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">role</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>This will appear in the UI under the &#8220;Browse Inventory&#8221; drop-down.</p>
+</div>
+<div class="section" id="inventory-host-display-name-field">
+<h3><code class="docutils literal"><span class="pre">inventory.host_display_name_field</span></code><a class="headerlink" href="#inventory-host-display-name-field" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>A name for a Host attribute that will be used as the host&#8217;s display name in various places in the UI.</p>
+<p>Examples: <code class="docutils literal"><span class="pre">&quot;hostname&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;instance-id&quot;</span></code></p>
+</div>
+<div class="section" id="inventory-host-table-sort-by">
+<h3><code class="docutils literal"><span class="pre">inventory.host_table_sort_by</span></code><a class="headerlink" href="#inventory-host-table-sort-by" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>A name for a Host attribute that will be used when sorting lists of hosts, on supporting Inventory Providers.
+Out of the box, this is currently only supported by the ElasticSearch provider.</p>
+<p>Examples: <code class="docutils literal"><span class="pre">&quot;hostname&quot;</span></code>, <code class="docutils literal"><span class="pre">&quot;instance-id&quot;</span></code></p>
+</div>
+<div class="section" id="inventory-host-table-fields">
+<h3><code class="docutils literal"><span class="pre">inventory.host_table_fields</span></code><a class="headerlink" href="#inventory-host-table-fields" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of dictionaries</strong></p>
+<p>Describe the list of Host attributes used when showing a table of multiple hosts.
+Common fields will generally include: role, data center, OS, IP address, # of cores, memory GBs, etc.</p>
+<p>Each dictionary should provide at least the <code class="docutils literal"><span class="pre">field</span></code> key, which corresponds to a Host attribute name, and an optional
+<code class="docutils literal"><span class="pre">title</span></code> key which will be used by the UI to give this field a human readable name.</p>
+<p>Example:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">inventory</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">host_table_fields</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">os</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Operating System</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dc</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Data Center</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">role</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">num_cores</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="s">&quot;#</span><span class="nv"> </span><span class="s">Of</span><span class="nv"> </span><span class="s">Cores&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">memory_gb</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Memory GB</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ipaddress</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">IP address</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>The field names may vary depending on your Inventory Provider.</p>
+</div>
+<div class="section" id="inventory-host-info-fields">
+<h3><code class="docutils literal"><span class="pre">inventory.host_info_fields</span></code><a class="headerlink" href="#inventory-host-info-fields" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of dictionaries</strong></p>
+<p>Describe the list of Host attributes used when a single host. Other fields will be hidden behind a &#8220;show more...&#8221; button.
+Common fields will generally include: role, data center, OS, IP address, # of cores, memory GBs, etc.</p>
+<p>Each dictionary should provide at least the <code class="docutils literal"><span class="pre">field</span></code> key, which corresponds to a Host attribute name, and an optional
+<code class="docutils literal"><span class="pre">title</span></code> key which will be used by the UI to give this field a human readable name.</p>
+<p>Example:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">inventory</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">host_info_fields</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">os</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Operating System</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">dc</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Data Center</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">role</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">num_cores</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="s">&quot;#</span><span class="nv"> </span><span class="s">Of</span><span class="nv"> </span><span class="s">Cores&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">memory_gb</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">Memory GB</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">field</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">ipaddress</span>
+      <span class="l l-Scalar l-Scalar-Plain">title</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">IP address</span>
+  <span class="l l-Scalar l-Scalar-Plain">...</span>
+</pre></div>
+</div>
+<p>The field names may vary depending on your Inventory Provider.</p>
+</div>
+</div>
+<div class="section" id="ldap-authentication-backend-configuration-parameters">
+<span id="config-params-ldap-backend"></span><h2>LDAP authentication backend configuration parameters<a class="headerlink" href="#ldap-authentication-backend-configuration-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Here&#8217;s what an LDAP configuration might look like:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">authentication</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">backend</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">gru.contrib.auth.backends.LdapBackend</span>
+  <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">server</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10.10.10.10</span>
+    <span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">3268</span>
+    <span class="l l-Scalar l-Scalar-Plain">bind_user</span><span class="p p-Indicator">:</span> <span class="s">&#39;CN=gru_bind_user,OU=ops,DC=example,DC=com&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">bind_password</span><span class="p p-Indicator">:</span> <span class="s">&#39;binduserpassword&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">user_query</span><span class="p p-Indicator">:</span> <span class="s">&#39;(sAMAccountName=$username)&#39;</span>
+</pre></div>
+</div>
+<div class="section" id="authentication-config-server">
+<h3><code class="docutils literal"><span class="pre">authentication.config.server</span></code><a class="headerlink" href="#authentication-config-server" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>LDAP server IP or hostname to use</p>
+</div>
+<div class="section" id="authentication-config-port">
+<h3><code class="docutils literal"><span class="pre">authentication.config.port</span></code><a class="headerlink" href="#authentication-config-port" title="Permalink to this headline">¶</a></h3>
+<p><strong>integer</strong></p>
+<p>LDAP server port to use</p>
+</div>
+<div class="section" id="authentication-config-bind-user">
+<h3><code class="docutils literal"><span class="pre">authentication.config.bind_user</span></code><a class="headerlink" href="#authentication-config-bind-user" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>LDAP user to bind with</p>
+</div>
+<div class="section" id="authentication-config-bind-password">
+<h3><code class="docutils literal"><span class="pre">authentication.config.bind_password</span></code><a class="headerlink" href="#authentication-config-bind-password" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>LDAP password to bind with</p>
+</div>
+<div class="section" id="authentication-config-user-query">
+<h3><code class="docutils literal"><span class="pre">authentication.config.user_query</span></code><a class="headerlink" href="#authentication-config-user-query" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>LDAP query to perform when searching the logging in user.
+You can use the <code class="docutils literal"><span class="pre">$username</span></code> interpolation token which will be replaced by the value provided by the logging in user.</p>
+</div>
+</div>
+<div class="section" id="configuration-parameters-for-the-built-in-elasticsearch-inventory-provider">
+<span id="config-params-es-provider"></span><h2>Configuration Parameters for the built-in ElasticSearch inventory provider<a class="headerlink" href="#configuration-parameters-for-the-built-in-elasticsearch-inventory-provider" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="inventory-config-index">
+<h3><code class="docutils literal"><span class="pre">inventory.config.index</span></code><a class="headerlink" href="#inventory-config-index" title="Permalink to this headline">¶</a></h3>
+<p><strong>string</strong></p>
+<p>The ElasticSearch index name to use</p>
+</div>
+<div class="section" id="inventory-config-hosts">
+<h3><code class="docutils literal"><span class="pre">inventory.config.hosts</span></code><a class="headerlink" href="#inventory-config-hosts" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of strings</strong></p>
+<p>A list of urls to use when connecting to the ElasticSearch cluster.</p>
+</div>
+<div class="section" id="inventory-config-timeout-seconds">
+<h3><code class="docutils literal"><span class="pre">inventory.config.timeout_seconds</span></code><a class="headerlink" href="#inventory-config-timeout-seconds" title="Permalink to this headline">¶</a></h3>
+<p><strong>integer</strong></p>
+<p>Amount of time in seconds before timing out a request to an ElasticSearch query</p>
+<p>Defaults to <code class="docutils literal"><span class="pre">30</span></code>.</p>
+</div>
+</div>
+<div class="section" id="configuration-parameters-for-the-built-in-ec2-inventory-provider">
+<span id="config-params-ec2-provider"></span><h2>Configuration Parameters for the built-in EC2 inventory provider<a class="headerlink" href="#configuration-parameters-for-the-built-in-ec2-inventory-provider" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="inventory-config-connections">
+<h3><code class="docutils literal"><span class="pre">inventory.config.connections</span></code><a class="headerlink" href="#inventory-config-connections" title="Permalink to this headline">¶</a></h3>
+<p><strong>array of dictionaries</strong></p>
+<p>Every connection to the EC2 API is represented by an entry in the connections array.</p>
+<p>For each connection, specify the following:</p>
+<p><code class="docutils literal"><span class="pre">inventory.config.accounts</span></code> - <strong>array</strong> the AWS accounts we want to connect to.</p>
+<p><code class="docutils literal"><span class="pre">inventory.config.accounts.[].aws_access_key_id</span></code> - <strong>string</strong> <em>optional</em> the AWS access key ID to connect with. If omitted, it will be searched in your filesystem and environment variables in the <a class="reference external" href="http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials">order listed in boto&#8217;s documentation</a></p>
+<p><code class="docutils literal"><span class="pre">inventory.config.accounts.[].aws_secret_access_key</span></code> - <strong>string</strong> <em>optional</em> the AWS secret access key to connect with. If omitted, it will be searched in your filesystem and environment variables in the <a class="reference external" href="http://boto3.readthedocs.io/en/latest/guide/configuration.html#configuring-credentials">order listed in boto&#8217;s documentation</a></p>
+<p><code class="docutils literal"><span class="pre">inventory.config.accounts.[].regions</span></code> - <strong>array of string</strong> <em>optional</em> The AWS regions we wish to connect and pull inventory from. Example: <code class="docutils literal"><span class="pre">['us-east-1',</span> <span class="pre">'us-west-2']</span></code></p>
+<p>Example:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">provider</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">gru.contrib.inventory.providers.EC2Provider</span>
+<span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">accounts</span><span class="p p-Indicator">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">aws_access_key_id</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">AKXXXXXXXXXXXXXXXXXX</span>
+      <span class="l l-Scalar l-Scalar-Plain">aws_secret_access_key</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">regions</span><span class="p p-Indicator">:</span> <span class="p p-Indicator">[</span><span class="s">&#39;us-east-1&#39;</span><span class="p p-Indicator">,</span> <span class="s">&#39;us-west-2&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration Reference</a><ul>
+<li><a class="reference internal" href="#setting-up-a-settings-file">Setting up a settings file</a></li>
+<li><a class="reference internal" href="#all-basic-configuration-parameters">All basic configuration parameters</a><ul>
+<li><a class="reference internal" href="#flask-debug"><code class="docutils literal"><span class="pre">flask.debug</span></code></a></li>
+<li><a class="reference internal" href="#flask-secret-key"><code class="docutils literal"><span class="pre">flask.secret_key</span></code></a></li>
+<li><a class="reference internal" href="#flask-session-seconds"><code class="docutils literal"><span class="pre">flask.session_seconds</span></code></a></li>
+<li><a class="reference internal" href="#ui-name"><code class="docutils literal"><span class="pre">ui.name</span></code></a></li>
+<li><a class="reference internal" href="#ui-items-per-page"><code class="docutils literal"><span class="pre">ui.items_per_page</span></code></a></li>
+<li><a class="reference internal" href="#ui-theme-name"><code class="docutils literal"><span class="pre">ui.theme.name</span></code></a></li>
+<li><a class="reference internal" href="#ui-theme-version"><code class="docutils literal"><span class="pre">ui.theme.version</span></code></a></li>
+<li><a class="reference internal" href="#plugins-directories"><code class="docutils literal"><span class="pre">plugins.directories</span></code></a></li>
+<li><a class="reference internal" href="#plugins-modules"><code class="docutils literal"><span class="pre">plugins.modules</span></code></a></li>
+<li><a class="reference internal" href="#authentication-backend"><code class="docutils literal"><span class="pre">authentication.backend</span></code></a></li>
+<li><a class="reference internal" href="#inventory-provider"><code class="docutils literal"><span class="pre">inventory.provider</span></code></a></li>
+<li><a class="reference internal" href="#inventory-group-by"><code class="docutils literal"><span class="pre">inventory.group_by</span></code></a></li>
+<li><a class="reference internal" href="#inventory-host-display-name-field"><code class="docutils literal"><span class="pre">inventory.host_display_name_field</span></code></a></li>
+<li><a class="reference internal" href="#inventory-host-table-sort-by"><code class="docutils literal"><span class="pre">inventory.host_table_sort_by</span></code></a></li>
+<li><a class="reference internal" href="#inventory-host-table-fields"><code class="docutils literal"><span class="pre">inventory.host_table_fields</span></code></a></li>
+<li><a class="reference internal" href="#inventory-host-info-fields"><code class="docutils literal"><span class="pre">inventory.host_info_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#ldap-authentication-backend-configuration-parameters">LDAP authentication backend configuration parameters</a><ul>
+<li><a class="reference internal" href="#authentication-config-server"><code class="docutils literal"><span class="pre">authentication.config.server</span></code></a></li>
+<li><a class="reference internal" href="#authentication-config-port"><code class="docutils literal"><span class="pre">authentication.config.port</span></code></a></li>
+<li><a class="reference internal" href="#authentication-config-bind-user"><code class="docutils literal"><span class="pre">authentication.config.bind_user</span></code></a></li>
+<li><a class="reference internal" href="#authentication-config-bind-password"><code class="docutils literal"><span class="pre">authentication.config.bind_password</span></code></a></li>
+<li><a class="reference internal" href="#authentication-config-user-query"><code class="docutils literal"><span class="pre">authentication.config.user_query</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration-parameters-for-the-built-in-elasticsearch-inventory-provider">Configuration Parameters for the built-in ElasticSearch inventory provider</a><ul>
+<li><a class="reference internal" href="#inventory-config-index"><code class="docutils literal"><span class="pre">inventory.config.index</span></code></a></li>
+<li><a class="reference internal" href="#inventory-config-hosts"><code class="docutils literal"><span class="pre">inventory.config.hosts</span></code></a></li>
+<li><a class="reference internal" href="#inventory-config-timeout-seconds"><code class="docutils literal"><span class="pre">inventory.config.timeout_seconds</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#configuration-parameters-for-the-built-in-ec2-inventory-provider">Configuration Parameters for the built-in EC2 inventory provider</a><ul>
+<li><a class="reference internal" href="#inventory-config-connections"><code class="docutils literal"><span class="pre">inventory.config.connections</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="plugin_dev.html" title="previous chapter">Developing Plugins</a></li>
+      <li>Next: <a href="contributing.html" title="next chapter">Contributing</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SimilarWeb LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/configuration.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

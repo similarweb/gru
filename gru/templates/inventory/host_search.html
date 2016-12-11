@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+
+{% if search_query %}
+<div class="alert alert-warning">
+    <h5 class="text-center">
+        <i class="glyphicon glyphicon-search"></i>
+        {{total}} results for <b>{{search_query}}</b>
+    </h5>
+</div>
+<hr>
+{% endif %}
+
+
+{% if host_list %}
+{% include "inventory/host_table.html" %}
+
+<!-- pagination -->
+<hr>
+<nav>
+	<ul class="pager">
+  		{% if not paginator.previous(total) %}
+    	<li class="previous disabled">
+            <a href="javascript:return false;"><span aria-hidden="true">&larr;</span> Previous</a>
+        </li>
+    	{% else %}
+    	<li class="previous">
+    		<a href="{{url_for('inventory.host_search', query=search_query, page=paginator.previous(total))}}">
+    			<span aria-hidden="true">&larr;</span>
+    			Previous
+    		</a>
+    	</li>
+		{% endif %}
+        {{total}} total results (page {{paginator.current_page}} of {{paginator.total_pages(total)}})
+		{% if not paginator.next(total) %}
+    	<li class="next disabled">
+            <a href="javascript:return false;">Next <span aria-hidden="true">&rarr;</span></a>
+        </li>
+    	{% else %}
+    	<li class="next">
+    		<a href="{{url_for('inventory.host_search', query=search_query, page=paginator.next(total))}}">
+    			Next
+    			<span aria-hidden="true">&rarr;</span>
+    		</a>
+    	</li>
+		{% endif %}
+	</ul>
+</nav>
+{% else %}
+<h3 class="text-center">No hosts found.</h3>
+{% endif %}
+
+
+{% endblock main %}

@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Authentication and Authorization &#8212; gru 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="gru 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Using plugins" href="plugins.html" />
+    <link rel="prev" title="Inventory Providers" href="inventory.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="authentication-and-authorization">
+<span id="authentication"></span><h1>Authentication and Authorization<a class="headerlink" href="#authentication-and-authorization" title="Permalink to this headline">¶</a></h1>
+<p>GRU supports pluggable authentication and authorization.</p>
+<p>To make things simple, authorization is done via user groups: a plugin can configure an <code class="docutils literal"><span class="pre">allowed_groups</span></code> variable
+that lists group names that have authorization to use the plugin.</p>
+<div class="section" id="configuring-an-authentication-backend">
+<h2>Configuring an Authentication Backend<a class="headerlink" href="#configuring-an-authentication-backend" title="Permalink to this headline">¶</a></h2>
+<p>Configuring the Authentication backend is done via the <code class="docutils literal"><span class="pre">authentication.backend</span></code> and <code class="docutils literal"><span class="pre">authentication.config</span></code> configuration parameters.
+Both are covered in the <a class="reference internal" href="configuration.html#authentication-backend"><span class="std std-ref">configuration documentation</span></a></p>
+</div>
+<div class="section" id="dummy-authentication-backend">
+<h2>Dummy authentication backend<a class="headerlink" href="#dummy-authentication-backend" title="Permalink to this headline">¶</a></h2>
+<p>By default, gru sets the authentication backend to <code class="docutils literal"><span class="pre">gru.contrib.auth.backends.DummyBackend</span></code>.</p>
+<p>This backend, as its name suggests, does nothing. No need for users to login, and users have no groups associated
+with them.</p>
+<p>If you use GRU in a network where only authorized personnel have access to the web interface, this might be enough.
+Make sure you protect this network and that you don&#8217;t accidentally expose it to the world.</p>
+<p>For all other situations, it is recommended to use a real authentication backend such as the LDAP one described below.</p>
+</div>
+<div class="section" id="ldap-authentication-backend">
+<h2>LDAP authentication backend<a class="headerlink" href="#ldap-authentication-backend" title="Permalink to this headline">¶</a></h2>
+<p>The LDAP backend is used to authenticate users against an existing LDAP server (such as Active Directory or OpenLDAP).</p>
+<p>Once a user has been authenticated, the LDAP backend also populates user&#8217;s group names, to allow plugins to authorize
+only users of specific groups.</p>
+<p>To enable the LDAP backend, please use <code class="docutils literal"><span class="pre">gru.contrib.auth.backends.LdapBackend</span></code> as the value for <code class="docutils literal"><span class="pre">authentication.backend</span></code>
+and refer to the <a class="reference internal" href="configuration.html#config-params-ldap-backend"><span class="std std-ref">backend documentation</span></a> for details on how to populate the <code class="docutils literal"><span class="pre">authentication.config</span></code> dictionary for the LDAP backend.</p>
+<p>Here&#8217;s a snippet of such a configuration:</p>
+<div class="highlight-yaml"><div class="highlight"><pre><span></span><span class="nn">---</span>
+<span class="l l-Scalar l-Scalar-Plain">authentication</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">backend</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">gru.contrib.auth.backends.LdapBackend</span>
+  <span class="l l-Scalar l-Scalar-Plain">config</span><span class="p p-Indicator">:</span>
+    <span class="l l-Scalar l-Scalar-Plain">server</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">10.0.0.7</span>
+    <span class="l l-Scalar l-Scalar-Plain">port</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">3268</span>
+    <span class="l l-Scalar l-Scalar-Plain">bind_user</span><span class="p p-Indicator">:</span> <span class="s">&#39;CN=gru,OU=Internal</span><span class="nv"> </span><span class="s">Tools,DC=mycompany,DC=com&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">bind_password</span><span class="p p-Indicator">:</span> <span class="s">&#39;**************&#39;</span>
+    <span class="l l-Scalar l-Scalar-Plain">user_query</span><span class="p p-Indicator">:</span> <span class="s">&#39;(sAMAccountName=$username)&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="writing-your-own">
+<h2>Writing your own<a class="headerlink" href="#writing-your-own" title="Permalink to this headline">¶</a></h2>
+<p>Writing an authentication backend is covered under <a class="reference internal" href="plugin_dev.html#plugin-dev-auth-backends"><span class="std std-ref">Writing your own authentication backends</span></a></p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Authentication and Authorization</a><ul>
+<li><a class="reference internal" href="#configuring-an-authentication-backend">Configuring an Authentication Backend</a></li>
+<li><a class="reference internal" href="#dummy-authentication-backend">Dummy authentication backend</a></li>
+<li><a class="reference internal" href="#ldap-authentication-backend">LDAP authentication backend</a></li>
+<li><a class="reference internal" href="#writing-your-own">Writing your own</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="inventory.html" title="previous chapter">Inventory Providers</a></li>
+      <li>Next: <a href="plugins.html" title="next chapter">Using plugins</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/authentication.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SimilarWeb LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/authentication.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

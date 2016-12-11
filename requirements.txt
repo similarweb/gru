@@ -1,0 +1,11 @@
+PyYAML==3.11
+gunicorn==19.3.0
+simpleldap==0.8
+Flask==0.10.1
+Flask-Script==2.0.5
+Flask-SeaSurf==0.2.0
+Fabric==1.10.2
+python-dateutil==2.4.2
+Flask-Collect==1.2.2
+elasticsearch==5.0.1
+boto3==1.4.1

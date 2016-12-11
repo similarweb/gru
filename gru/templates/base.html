@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>{{settings.get('ui.name')}}{% if title %} - {{title}}{% endif %}</title>
+    <!-- Bootstrap -->
+    <link
+    	href="https://maxcdn.bootstrapcdn.com/bootswatch/{{settings.get('ui.theme.version')}}/{{settings.get('ui.theme.name')}}/bootstrap.min.css" 
+    	rel="stylesheet">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<link rel="icon" 
+      type="image/png" 
+      href="/favicon.ico" />
+    <meta name="csrf_token" content="{{csrf_token()}}">
+    <style type="text/css">
+    	body { font-size: 14px; }
+		.main {padding-top: 70px; padding-bottom: 50px;}
+        .flashes {margin-top: 50px;}
+		.modal .table-hover>tbody>tr:hover { background-color: #FFFFFF; }
+    </style>
+    {% block extracss %}{% endblock extracss %}
+  </head>
+  <body>
+	
+	{% block navbar %}
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">{{settings.get('ui.name')}}</a>
+			</div>
+			{% block navlinks %}
+			<div id="navbar" class="navbar-collapse collapse">
+
+				<ul class="nav navbar-nav">
+					<li class="dropdown {% if group_title %}active{% endif %}">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"
+						   role="button" aria-haspopup="true"
+						   aria-expanded="false">
+						   		Browse Inventory <span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							{% for field in settings.get('inventory.group_by') %}
+							<li class="{% if group_field == field.get('field') %}active{% endif %}">
+								<a href="{{url_for('inventory.group_breakdown', group=field.get('field'))}}">
+									By {{field.get('title')}}
+								</a>
+							</li>
+							{% endfor %}
+			          	</ul>
+					</li>
+				</ul>
+
+				<form class="navbar-form navbar-left" role="search"
+					action="{{url_for('inventory.host_search_form')}}" method="get">
+					<div class="form-group">
+						<div class="input-group">
+						  <input type="text" name="q" class="form-control" autocomplete="off"
+							{% if search_query %}value="{{search_query}}"{% endif %}placeholder="Search Inventory">
+						</div>
+					</div>
+					<!-- <button type="submit" class="btn btn-success">Search</button> -->
+				</form>
+
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"
+						   role="button" aria-haspopup="true"
+						   aria-expanded="false">{{session.get('user').get('name')}} <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+				            <!-- <li><a href="#">Settings</a></li>
+				            <li role="separator" class="divider"></li> -->
+				            <li><a href="{{url_for('auth.logout_view')}}" class="logout-btn">Logout</a></li>
+			          	</ul>
+					</li>
+				</ul>
+
+				{% if app.plugins.pages %}
+				<ul class="nav navbar-nav navbar-right">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"
+						   role="button" aria-haspopup="true"
+						   aria-expanded="false">Plugins <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							{% for page in app.plugins.pages %}
+                            {%  if page.get_title() %}
+							<li><a href="{{page.get_url()}}">{{page.get_title()}}</a></li>
+                            {% endif %}
+							{% endfor %}
+			          	</ul>
+					</li>
+				</ul>
+				{% endif %}
+			</div><!--/.nav-collapse -->
+			{% endblock navlinks %}
+		</div><!--/.container-fluid -->
+	</nav>
+	{% endblock %}
+
+	{% with messages = get_flashed_messages(with_categories=true) %}
+	  {% if messages %}
+	    <div class="flashes">
+	    {% for category, message in messages %}
+	      <div class="alert alert-{{ category }} fade in">
+	      	<button class="close" data-dismiss="alert">x</button>
+	      	{{ message }}
+	      </div>
+	    {% endfor %}
+	    </div>
+	  {% endif %}
+	{% endwith %}
+
+  	<div class="container main">
+	    {% block main %}{% endblock %}
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/{{settings.get('ui.theme.version')}}/js/bootstrap.min.js"></script>
+
+	<!-- csrf protection -->
+	<script>
+		function csrfSafeMethod(method) {
+		  // these HTTP methods do not require CSRF protection
+		  return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+		}
+		$.ajaxSetup({
+		  beforeSend: function(xhr, settings) {
+		    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+		      xhr.setRequestHeader('X-CSRFToken', $('meta[name="csrf_token"]').attr('content'));
+			}
+		  }
+		});
+	</script>
+
+    <!-- handle logout -->
+    <script>
+        $(function() {
+           $('.logout-btn').on('click', function(e) {
+               e.preventDefault();
+               $.post($(this).attr('href'))
+                       .success(function() { window.location = '/'; })
+                       .error(function(e) { alert('' + e); });
+           });
+        });
+    </script>
+
+
+    {% block extrajs %}{% endblock extrajs %}
+  </body>
+</html>

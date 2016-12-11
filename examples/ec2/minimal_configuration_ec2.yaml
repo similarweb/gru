@@ -1,0 +1,43 @@
+---
+flask:
+  # Keep this one random. used by the session system.
+  secret_key: 'usesomethingreallyrandomplease'
+
+# App related configuration
+inventory:
+  provider: gru.contrib.inventory.providers.EC2Provider 
+  config:
+   accounts:
+      - regions: ['us-east-1']
+  host_display_name_field: tag:Name
+  group_by:
+    - field: tag:stack
+      title: Stack
+    - field: tag:role
+      title: Role
+    - field: region
+      title: Region
+  host_table_fields:
+    - field: tag:role
+      title: Role 
+    - field: tag:environment
+      title: Env
+    - field: architecture
+      title: Arch
+    - field: instance-state-name
+      title: Status
+    - field: private-ip-address
+      title: IP
+  host_info_fields:
+    - field: tag:role
+      title: Role
+    - field: region
+      title: DC
+    - field: tag:environment
+      title: Env
+    - field: architecture
+      title: Arch
+    - field: instance-state-name
+      title: Status
+    - field: private-ip-address
+      title: IP

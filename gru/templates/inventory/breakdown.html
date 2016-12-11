@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block main %}
+
+<ol class="breadcrumb">
+	<li class="active"><a href="{{url_for('inventory.group_breakdown', group=group_field)}}">{{group_title}}</a></li>
+</ol>
+
+{% for category in categories %}
+<div class="panel panel-default">
+	<div class="panel-body">
+		<h4>
+			<a href="{{url_for('inventory.host_list', group=category.category, field=category.group)}}">{{category.group}}</a>
+			<small>{{category.count}} hosts</small>
+		</h4>
+	</div>
+</div>
+{% endfor %}
+
+
+{% endblock main %}

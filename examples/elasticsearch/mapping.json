@@ -1,0 +1,113 @@
+{
+  "inventory-facter": {
+    "order": 0,
+    "template": "inventory-facter",
+    "settings": {
+      "index": {
+        "number_of_shards": "6"
+      }
+    },
+    "mappings": {
+      "host": {
+        "_source": {
+          "excludes": [
+            "ec2_metadata.network.interfaces.macs",
+            "ec2_network_interfaces_macs_*",
+            "mtu_veth*",
+            "macaddress_veth*",
+            "ec2_block_device_mapping_ephemeral*",
+            "ephemeral*"
+          ],
+          "enabled": true
+        },
+        "dynamic_templates": [
+          {
+            "virtual_nics_mtu": {
+              "mapping": {
+                "include_in_all": false,
+                "index": "no",
+                "dynamic": false,
+                "store": false,
+                "enabled": false
+              },
+              "match": "mtu_veth*"
+            }
+          },
+          {
+            "virtual_nics_mac": {
+              "mapping": {
+                "include_in_all": false,
+                "index": "no",
+                "dynamic": false,
+                "store": false,
+                "enabled": false
+              },
+              "match": "macaddress_veth*"
+            }
+          },
+          {
+            "ec2_metadata_macs": {
+              "mapping": {
+                "include_in_all": false,
+                "index": "no",
+                "dynamic": false,
+                "store": false,
+                "enabled": false
+              },
+              "match": "ec2_network_interfaces_macs_*"
+            }
+          },
+          {
+            "ec2_metadata_macs2": {
+              "path_match": "ec2_metadata.network.interfaces.macs",
+              "mapping": {
+                "include_in_all": false,
+                "index": "no",
+                "dynamic": false,
+                "store": false,
+                "enabled": false
+              }
+            }
+          },
+          {
+            "ipaddress": {
+              "mapping": {
+                "type": "ip"
+              },
+              "match_mapping_type": "string",
+              "match": "ipaddress*"
+            }
+          },
+          {
+            "dc_order_price": {
+              "mapping": {
+                "type": "long"
+              },
+              "match_mapping_type": "long",
+              "match": "dc_order_price*"
+            }
+          },
+          {
+            "generic_string": {
+              "mapping": {
+                "index": "not_analyzed",
+                "type": "string"
+              },
+              "match_mapping_type": "string",
+              "match": "*"
+            }
+          }
+        ],
+        "_timestamp": {
+          "enabled": "true"
+        },
+        "properties": {
+          "ipaddress": {
+            "type": "ip"
+          }
+        }
+      }
+    },
+    "aliases": {}
+  }
+}

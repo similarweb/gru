@@ -1,0 +1,8 @@
+gru:
+  build: .
+  volumes:
+    - $PWD/examples/gru_settings.example.yaml:/gru_settings.yaml
+  environment:
+    - GRU_SETTINGS=/etc/gru.yaml
+  ports:
+    - 5000:5000

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block extracss %}
+	{% for widget in host_widgets %}
+		{{widget.get('css')|safe}}
+	{% endfor %}
+{% endblock %}
+
+
+{% block main %}
+
+<div class="row">
+	<div>
+		<h3 title="{{ host.get_identifier() }}">
+			{{host.get_display_name()}}
+		</h3>
+	</div>
+</div>
+
+<div class="row">
+	<hr>
+</div>
+
+
+<section class="row">
+	<table class="table table-condensed table-hover">
+		<thead>
+			<tr>
+				<td><strong>Propery</strong></td>
+				<td><strong>Value</strong></td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for field in settings.get('inventory.host_info_fields') %}
+			<tr>
+				<td title="{{field.get('field')}}">{{field.get('title')}}</td>
+				<td>{{host.field(field.get('field'))}}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<a class="btn btn-sm btn-primary-outline" role="button" data-toggle="collapse" href="#full_inventory" aria-expanded="false" aria-controls="full_inventory">
+		All facts <span class="caret"></span>
+	</a>
+	<table class="table table-condensed table-hover collapse" id="full_inventory">
+		<thead>
+			<tr>
+				<td><strong>Propery</strong></td>
+				<td><strong>Value</strong></td>
+			</tr>
+		</thead>
+		<tbody>
+			{% for field in host.host_data.keys() | sort %}
+			<tr>
+				<td title="{{field}}">{{field}}</td>
+				{% if host.host_data[field] is mapping %}
+				<td><pre>{{ host.host_data[field] | prettify_structured | safe }}</pre></td>
+				{% else %}
+				<td>{{ host.host_data[field] | prettify_structured }}</td>
+				{% endif %}
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+</section>
+
+<div class="row">
+	<hr>
+</div>
+
+{% for widget in host_widgets %}
+	<section class="row">
+		<h4>{{widget.get('title')}}</h4>
+		<hr>
+		{{widget.get('html')|safe}}
+	</section>
+{% endfor %}
+{% endblock main %}
+
+
+
+{% block extrajs %}
+	{% for widget in host_widgets %}
+		{{widget.get('js')|safe}}
+	{% endfor %}
+{% endblock %}
+

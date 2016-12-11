@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Using plugins &#8212; gru 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="gru 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Developing Plugins" href="plugin_dev.html" />
+    <link rel="prev" title="Authentication and Authorization" href="authentication.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="using-plugins">
+<span id="plugins"></span><h1>Using plugins<a class="headerlink" href="#using-plugins" title="Permalink to this headline">¶</a></h1>
+<p>Gru was built with the concept of extendability in mind. Since an inventory of hosts can have many different usages
+and different companies have a different view of the world (also with regards to how their infrastructure is managed),
+there&#8217;s built-in support for 2 main types of plugins: <em>Host widgets</em> and <em>Page plugins</em></p>
+<div class="section" id="host-widgets">
+<span id="id1"></span><h2>Host Widgets<a class="headerlink" href="#host-widgets" title="Permalink to this headline">¶</a></h2>
+<p>Host Widgets are plugins that live within the context of a single host.</p>
+<p>They are generally used to provide additional information about the host from external systems (say monitoring, configuration management, cost, etc)
+or to support actions to be carried out for that host.</p>
+</div>
+<div class="section" id="page-plugins">
+<span id="id2"></span><h2>Page plugins<a class="headerlink" href="#page-plugins" title="Permalink to this headline">¶</a></h2>
+<p>Page plugins are plugins that transcend hosts in general. As their name suggests, they are pages that are rendered
+within GRU and have access to the host inventory system. They are generally designed to complement GRU&#8217;s use-cases
+by adding more host/fleet related functionality.</p>
+<p>For example, at <a class="reference external" href="http://www.similarweb.com/">SimilarWeb</a>, we built a page plugin that displays currently open incidents, linking back to relevant stacks and servers - which is used by on-call personnel.</p>
+</div>
+<div class="section" id="loading-plugins">
+<span id="id3"></span><h2>Loading plugins<a class="headerlink" href="#loading-plugins" title="Permalink to this headline">¶</a></h2>
+<p>In order to load an existing plugin, you&#8217;ll need to do the following:</p>
+<ol class="arabic">
+<li><p class="first">Make sure the plugin&#8217;s python module is in gru&#8217;s <code class="docutils literal"><span class="pre">sys.path</span></code> (python&#8217;s search path for modules).</p>
+<p>The easiest way to accomplish this, is to either place the plugins under the default <a class="reference internal" href="configuration.html#plugin-directories"><span class="std std-ref">plugins.directories</span></a>.</p>
+<p>Alternatively, you can specify your own directories to override the default paths.</p>
+</li>
+<li><p class="first">For plugins that require configuration, see their documentation and update your GRU settings YAML file accordingly.</p>
+</li>
+<li><p class="first">Restart the GRU web server for the changes to get picked up.</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Using plugins</a><ul>
+<li><a class="reference internal" href="#host-widgets">Host Widgets</a></li>
+<li><a class="reference internal" href="#page-plugins">Page plugins</a></li>
+<li><a class="reference internal" href="#loading-plugins">Loading plugins</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="authentication.html" title="previous chapter">Authentication and Authorization</a></li>
+      <li>Next: <a href="plugin_dev.html" title="next chapter">Developing Plugins</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plugins.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SimilarWeb LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/plugins.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

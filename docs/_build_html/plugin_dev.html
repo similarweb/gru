@@ -1,0 +1,444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Developing Plugins &#8212; gru 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="gru 0.1.0 documentation" href="index.html" />
+    <link rel="next" title="Configuration Reference" href="configuration.html" />
+    <link rel="prev" title="Using plugins" href="plugins.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="developing-plugins">
+<span id="plugin-dev"></span><h1>Developing Plugins<a class="headerlink" href="#developing-plugins" title="Permalink to this headline">¶</a></h1>
+<p>To understand the basic concept of plugins and how to use them, refer to the <a class="reference internal" href="plugins.html#plugins"><span class="std std-ref">usage documentation</span></a></p>
+<p>This document describes the process and APIs required to develop your own plugins.</p>
+<div class="section" id="plugin-architecture-overview">
+<span id="plugin-dev-arch"></span><h2>Plugin Architecture Overview<a class="headerlink" href="#plugin-architecture-overview" title="Permalink to this headline">¶</a></h2>
+<p>GRU Plugins are Python classes that subclass abstract plugin classes.</p>
+<p>For example, to write your own <em>Host Widget</em>, you&#8217;ll need to subclass the <a class="reference internal" href="#gru.plugins.base.hostwidget.HostWidgetPlugin" title="gru.plugins.base.hostwidget.HostWidgetPlugin"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.base.hostwidget.HostWidgetPlugin</span></code></a> class.</p>
+<p>On startup, the server will do the following:</p>
+<ol class="arabic simple">
+<li>Add the directories listed under <a class="reference internal" href="configuration.html#plugin-directories"><span class="std std-ref">plugins.directories</span></a> to Python&#8217;s <code class="docutils literal"><span class="pre">sys.path</span></code></li>
+<li>It will then iterate over the module names listed in <code class="docutils literal"><span class="pre">plugins.modules</span></code> and import them</li>
+<li>For each imported module, the server will iterate over all classes, looking for ones that subclass any of GRU&#8217;s internal abstract plugin types</li>
+<li>An object will be instantiated out of each class found. The default <code class="docutils literal"><span class="pre">on_load()</span></code> method will be called. This is where plugin startup code should live. Things like setting up database connections should be done there</li>
+<li>For modules that expose <a class="reference external" href="http://flask.pocoo.org/docs/0.11/views/#basic-principle">views</a>, a Flask <a class="reference external" href="http://flask.pocoo.org/docs/latest/blueprints/">Blueprint</a> will be registered and used when serving these views</li>
+</ol>
+<p>All plugins subclass the following abstract class:</p>
+<dl class="class">
+<dt id="gru.plugins.base.BasePlugin">
+<em class="property">class </em><code class="descclassname">gru.plugins.base.</code><code class="descname">BasePlugin</code><a class="headerlink" href="#gru.plugins.base.BasePlugin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt>
+<code class="descname">on_load(self):</code></dt>
+<dd><p>Defaults to doing nothing.
+If you have any startup logic, this is the place to put it.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="host-widgets">
+<span id="plugin-dev-widgets"></span><h2>Host Widgets<a class="headerlink" href="#host-widgets" title="Permalink to this headline">¶</a></h2>
+<p>To write your own Host widget you&#8217;ll need to provide the following:</p>
+<ol class="arabic">
+<li><p class="first">A subclass of <code class="docutils literal"><span class="pre">gru.plugins.base.hostwidget.HostWidgetPlugin</span></code></p>
+</li>
+<li><dl class="first docutils">
+<dt>A template file that extends <code class="docutils literal"><span class="pre">plugins/host_widget.html</span></code>. This <a class="reference external" href="http://flask.pocoo.org/docs/latest/templating/">Jinja</a> template defines 3 parts that you&#8217;ll be able to overide. They will later be merged into the host info page. These parts are:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">plugincss</span></code> - will be loaded at the head of the host info page. This is where <code class="docutils literal"><span class="pre">&lt;style&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;...&quot;&gt;</span></code> tags should go.</li>
+<li><code class="docutils literal"><span class="pre">pluginhtml</span></code> - the actual HTML to be rendered inside the host info page body, under the basic host information</li>
+<li><code class="docutils literal"><span class="pre">pluginjs</span></code> - will be placed at the bottom of the HTML body. This is where <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> tags should go.</li>
+</ul>
+</dd>
+</dl>
+<p>All template blocks will get the results of the plugin class&#8217; <code class="docutils literal"><span class="pre">get_context(self,</span> <span class="pre">host)</span></code> method. That&#8217;s probably the one you&#8217;ll need to override.</p>
+</li>
+</ol>
+<p>Here&#8217;s a reference of the plugin class:</p>
+<dl class="class">
+<dt id="gru.plugins.base.hostwidget.HostWidgetPlugin">
+<em class="property">class </em><code class="descclassname">gru.plugins.base.hostwidget.</code><code class="descname">HostWidgetPlugin</code><a class="headerlink" href="#gru.plugins.base.hostwidget.HostWidgetPlugin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="gru.plugins.base.hostwidget.HostWidgetPlugin.template_name">
+<code class="descname">template_name</code><a class="headerlink" href="#gru.plugins.base.hostwidget.HostWidgetPlugin.template_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>A name of a template file to render. The file must extend <code class="docutils literal"><span class="pre">plugins/host_widget.html</span></code> and define the blocks listed above.</p>
+<p>You can define a <code class="docutils literal"><span class="pre">templates/</span></code> directory inside your module&#8217;s parent directory. If it exists, GRU will add it to the template
+search path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">get_title(self):</code></dt>
+<dd><p>You must provide an implementation of this method.
+It should return a string that will be used as the title for this widget in the host info page.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">qualify(self, host):</code></dt>
+<dd><p>Given a <a class="reference internal" href="#gru.plugins.inventory.Host" title="gru.plugins.inventory.Host"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.Host</span></code></a> object, should return <code class="docutils literal"><span class="pre">True</span></code> or <code class="docutils literal"><span class="pre">False</span></code>.
+If <code class="docutils literal"><span class="pre">True</span></code>, the widget will be rendered for the given host&#8217;s info page.</p>
+<p>This is useful If you have widgets that don&#8217;t make sense for every host, so you want to display them
+only where appropriate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">def get_context(self, host):</code></dt>
+<dd><p>Given a <a class="reference internal" href="#gru.plugins.inventory.Host" title="gru.plugins.inventory.Host"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.Host</span></code></a> object, should return a python dictionary to be used as context for the template file.
+The default implementation simply returns <code class="docutils literal"><span class="pre">{}</span></code>, so you&#8217;ll likely want to override it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">def ajax_request(self, request):</code></dt>
+<dd><p>Useful if you want the widget to be able to send AJAX requests back to  the server.
+The method will receive a Flask request object, and should return a valid <a class="reference external" href="http://flask.pocoo.org/docs/latest/quickstart/#about-responses">Flask response</a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="page-plugins">
+<span id="plugin-dev-pages"></span><h2>Page Plugins<a class="headerlink" href="#page-plugins" title="Permalink to this headline">¶</a></h2>
+<p>To write your own Page Plugin you&#8217;ll need to provide the following:</p>
+<ol class="arabic">
+<li><p class="first">A subclass of <a class="reference internal" href="#gru.plugins.base.page.PagePlugin" title="gru.plugins.base.page.PagePlugin"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.base.page.PagePlugin</span></code></a></p>
+</li>
+<li><dl class="first docutils">
+<dt>Optionally, if this page plugin returns an HTML page to be rendered within GRU: A template file that extends <code class="docutils literal"><span class="pre">plugins/page.html</span></code>. This <a class="reference external" href="http://flask.pocoo.org/docs/latest/templating/">Jinja</a> template defines 3 parts that you&#8217;ll be able to overide. They will later be merged into the host info page. These parts are:</dt>
+<dd><ul class="first last simple">
+<li><code class="docutils literal"><span class="pre">plugincss</span></code> - will be loaded at the head of the page. This is where <code class="docutils literal"><span class="pre">&lt;style&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;link</span> <span class="pre">rel=&quot;...&quot;&gt;</span></code> tags should go.</li>
+<li><code class="docutils literal"><span class="pre">pluginhtml</span></code> - the actual HTML to be rendered. GRU will wrap this with the default navbar, footer, etc.</li>
+<li><code class="docutils literal"><span class="pre">pluginjs</span></code> - will be placed at the bottom of the HTML body. This is where <code class="docutils literal"><span class="pre">&lt;script&gt;</span></code> tags should go.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">If the plugin defines a <code class="docutils literal"><span class="pre">get_title()</span></code> method, it will be linked to from the navigation bar, in the <code class="docutils literal"><span class="pre">plugins</span></code> dropdown.</p>
+</li>
+</ol>
+<p>Here&#8217;s a reference of the plugin class:</p>
+<dl class="class">
+<dt id="gru.plugins.base.page.PagePlugin">
+<em class="property">class </em><code class="descclassname">gru.plugins.base.page.</code><code class="descname">PagePlugin</code><a class="headerlink" href="#gru.plugins.base.page.PagePlugin" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="gru.plugins.base.page.PagePlugin.template_name">
+<code class="descname">template_name</code><a class="headerlink" href="#gru.plugins.base.page.PagePlugin.template_name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Optional</em> - a name of a template file to render. The file must extend <code class="docutils literal"><span class="pre">plugins/page.html</span></code> and define the blocks listed above.</p>
+<p>You can define a <code class="docutils literal"><span class="pre">templates/</span></code> directory inside your module&#8217;s parent directory. If it exists, GRU will add it to the template
+search path.</p>
+<p>You may also define a <code class="docutils literal"><span class="pre">static/</span></code> directory, containing static resources such as images, scripts and CSS files.
+To later include them within your template, use the <code class="docutils literal"><span class="pre">plugin_static()</span></code> function within your template. Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">script</span> <span class="n">src</span><span class="o">=</span><span class="s2">&quot;{{plugin_static(&#39;myplugin/js/plugin.js&#39;)}}&quot;</span><span class="o">&gt;&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+<p>This will be replaced with the URL given to your <code class="docutils literal"><span class="pre">static/myplugin/js/plugin.js</span></code> file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">get_title(self):</code></dt>
+<dd><p>Should return a string. It will be used to register the plugin in the plugins dropdown, in GRU&#8217;s navigation bar.
+The default implementation returns <code class="docutils literal"><span class="pre">None</span></code> meaning it won&#8217;t be registered in the plugins dropdown.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">handler(self, request):</code></dt>
+<dd><p>The method will receive a Flask request object, and should return a valid <a class="reference external" href="http://flask.pocoo.org/docs/latest/quickstart/#about-responses">Flask response</a>.
+You may simply <code class="docutils literal"><span class="pre">return</span> <span class="pre">self.render()</span></code> here, which will render the template you provided using the <code class="docutils literal"><span class="pre">template_name</span></code> attribute.</p>
+<p>Sometimes it&#8217;s useful to register a PagePlugin which returns a JSON response.
+Generally it will be called using an AJAX call by another plugin. In such a case,
+you should keep the default <code class="docutils literal"><span class="pre">get_title(self)</span></code> implementation and probably leave <code class="docutils literal"><span class="pre">template_name</span></code> blank as well.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">render(self, http_status=200, **kwargs):</code></dt>
+<dd><p>A helper method that renders a Jinja template and return a <a class="reference external" href="http://flask.pocoo.org/docs/latest/quickstart/#about-responses">Flask response</a>.
+Whatever you passed in as <code class="docutils literal"><span class="pre">kwargs</span></code> will be added to the <a class="reference external" href="http://flask.pocoo.org/docs/latest/templating/">Jinja</a> context when rendering the template.</p>
+<p>The template to render will be taken from the <code class="docutils literal"><span class="pre">template_name</span></code> attribute.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="inventory-providers">
+<span id="plugin-dev-inventory-providers"></span><h2>Inventory Providers<a class="headerlink" href="#inventory-providers" title="Permalink to this headline">¶</a></h2>
+<p>Writing an Inventory Provider requires subclassing <a class="reference internal" href="#gru.plugins.inventory.InventoryProvider" title="gru.plugins.inventory.InventoryProvider"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.InventoryProvider</span></code></a>.</p>
+<p>To use the plugin you developed, you&#8217;ll need to make sure the module is loaded (specified under <code class="docutils literal"><span class="pre">plugins.modules</span></code>) and
+that <code class="docutils literal"><span class="pre">inventory.provider</span></code> points to your subclass&#8217; path.</p>
+<dl class="class">
+<dt id="gru.plugins.inventory.InventoryProvider">
+<em class="property">class </em><code class="descclassname">gru.plugins.inventory.</code><code class="descname">InventoryProvider</code><a class="headerlink" href="#gru.plugins.inventory.InventoryProvider" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt>
+<code class="descname">host_group_breakdown(self, category):</code></dt>
+<dd><p>Returns a list of <a class="reference internal" href="#gru.plugins.inventory.HostCategory" title="gru.plugins.inventory.HostCategory"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.HostCategory</span></code></a> objects.
+Example: if <code class="docutils literal"><span class="pre">category</span> <span class="pre">=</span> <span class="pre">&quot;datacenter&quot;</span></code>, an expected return value would be <code class="docutils literal"><span class="pre">[HostCategory(&quot;datacenter&quot;,</span> <span class="pre">&quot;us-east-1&quot;,</span> <span class="pre">10),</span> <span class="pre">HostCategory(&quot;datacenter&quot;,</span> <span class="pre">&quot;us-west-2&quot;,</span> <span class="pre">5)]</span></code></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">list(self, category, group, sort_by=None, from_ind=None, to_ind=None):</code></dt>
+<dd><p>Returns a <a class="reference internal" href="#gru.plugins.inventory.HostList" title="gru.plugins.inventory.HostList"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.HostList</span></code></a> object after filter by a field and value.
+Example: <code class="docutils literal"><span class="pre">provider.list(&quot;datacenter&quot;,</span> <span class="pre">&quot;us-east-1&quot;)</span></code> will return all Hosts in the <em>us-east-1</em> datacenter</p>
+<p>Use <code class="docutils literal"><span class="pre">from_ind</span></code> and to_ind`` to support pagination. Both values are zero-based integers.</p>
+<p><code class="docutils literal"><span class="pre">sort_by</span></code> is optional. If set, the list of <a class="reference internal" href="#gru.plugins.inventory.Host" title="gru.plugins.inventory.Host"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.Host</span></code></a> objects should be sorted by this field name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">host_search(self, query, from_ind=None, to_ind=None):</code></dt>
+<dd><p>Given a query string, perform a search of hosts and returns a <a class="reference internal" href="#gru.plugins.inventory.HostList" title="gru.plugins.inventory.HostList"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.HostList</span></code></a> object.</p>
+<p><code class="docutils literal"><span class="pre">query</span></code> will be a string provided by the user in the search box.</p>
+<p>Use <code class="docutils literal"><span class="pre">from_ind</span></code> and to_ind`` to support pagination. Both values are zero-based integers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">get_host_by_id(self, host_id):</code></dt>
+<dd><p>Return a <a class="reference internal" href="#gru.plugins.inventory.Host" title="gru.plugins.inventory.Host"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.Host</span></code></a> object for the provided host_id.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="host-hostcategory-and-hostlist">
+<h3>Host, HostCategory and HostList<a class="headerlink" href="#host-hostcategory-and-hostlist" title="Permalink to this headline">¶</a></h3>
+<hr class="docutils" />
+<dl class="class">
+<dt id="gru.plugins.inventory.Host">
+<em class="property">class </em><code class="descclassname">gru.plugins.inventory.</code><code class="descname">Host</code><a class="headerlink" href="#gru.plugins.inventory.Host" title="Permalink to this definition">¶</a></dt>
+<dd><p>A <code class="docutils literal"><span class="pre">Host</span></code> is the most basic primitive in GRU. A host will generally have some unique ID (a MAC address, an AWS instance ID, or similar)
+and a key/value mapping of metadata. Common metadata attributes may include OS version, IP address, role, datacenter, etc.</p>
+<dl class="method">
+<dt>
+<code class="descname">__init__(self, host_id, host_data=None):</code></dt>
+<dd><p>Creates a new host by passing in a host identifier (should be unique) and a python dictionary describing host metadata information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">field(self, field_name, default=None):</code></dt>
+<dd><p>Returns a field value from the host metadata.</p>
+<p>Also supports fetching nested fields using <code class="docutils literal"><span class="pre">&quot;.&quot;</span></code> notation. i.e. <code class="docutils literal"><span class="pre">host.field('os.name')</span></code> will work with this metadata: <code class="docutils literal"><span class="pre">{'os':</span> <span class="pre">{'name':</span> <span class="pre">'Linux'}</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="class">
+<dt id="gru.plugins.inventory.HostCategory">
+<em class="property">class </em><code class="descclassname">gru.plugins.inventory.</code><code class="descname">HostCategory</code><a class="headerlink" href="#gru.plugins.inventory.HostCategory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use this class when returning a list of host categories from the <code class="docutils literal"><span class="pre">host_group_breakdown()</span></code> method of a <a class="reference internal" href="#gru.plugins.inventory.InventoryProvider" title="gru.plugins.inventory.InventoryProvider"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.InventoryProvider</span></code></a>.</p>
+<dl class="method">
+<dt>
+<code class="descname">__init__(self, category, group, count=0):</code></dt>
+<dd><p><code class="docutils literal"><span class="pre">category</span></code> - a string specifying the category to breakdown by. e.g. <code class="docutils literal"><span class="pre">&quot;datacenter&quot;</span></code></p>
+<p><code class="docutils literal"><span class="pre">group</span></code> - a string specifying the current group. e.g. <code class="docutils literal"><span class="pre">&quot;us-east-1&quot;</span></code></p>
+<p><code class="docutils literal"><span class="pre">count</span></code> - an integer specifying the amount of hosts in the group. e.g. <code class="docutils literal"><span class="pre">0</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<hr class="docutils" />
+<dl class="class">
+<dt id="gru.plugins.inventory.HostList">
+<em class="property">class </em><code class="descclassname">gru.plugins.inventory.</code><code class="descname">HostList</code><a class="headerlink" href="#gru.plugins.inventory.HostList" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class represents a response to a search query or filter by an <a class="reference internal" href="#gru.plugins.inventory.InventoryProvider" title="gru.plugins.inventory.InventoryProvider"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.InventoryProvider</span></code></a>.</p>
+<dl class="method">
+<dt>
+<code class="descname">__init__(self, hosts=None, total_hosts=0):</code></dt>
+<dd><p><code class="docutils literal"><span class="pre">hosts</span></code> -a list of <a class="reference internal" href="#gru.plugins.inventory.Host" title="gru.plugins.inventory.Host"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.inventory.Host</span></code></a> objects.</p>
+<p><code class="docutils literal"><span class="pre">total_hosts</span></code> - integer. If the number passsed is bigger than <code class="docutils literal"><span class="pre">len(hosts)</span></code>, a paginator will appear.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="authentication-backends">
+<span id="plugin-dev-auth-backends"></span><h2>Authentication Backends<a class="headerlink" href="#authentication-backends" title="Permalink to this headline">¶</a></h2>
+<p>Writing an Authentication Backend requires subclassing <a class="reference internal" href="#gru.plugins.auth.AuthenticationBackend" title="gru.plugins.auth.AuthenticationBackend"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.auth.AuthenticationBackend</span></code></a>.</p>
+<p>To use the plugin you developed, you&#8217;ll need to make sure the module is loaded (specified under <code class="docutils literal"><span class="pre">plugins.modules</span></code>) and
+that <code class="docutils literal"><span class="pre">authentication.backend</span></code> points to your subclass&#8217; path.</p>
+<dl class="class">
+<dt id="gru.plugins.auth.AuthenticationBackend">
+<em class="property">class </em><code class="descclassname">gru.plugins.auth.</code><code class="descname">AuthenticationBackend</code><a class="headerlink" href="#gru.plugins.auth.AuthenticationBackend" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt>
+<code class="descname">authenticate(self, username, password):</code></dt>
+<dd><p>Given a username and a password, should return a <a class="reference internal" href="#gru.plugins.auth.User" title="gru.plugins.auth.User"><code class="xref any py py-class docutils literal"><span class="pre">gru.plugins.auth.User</span></code></a> object if authentication is successful.</p>
+<p>Otherwise, return <code class="docutils literal"><span class="pre">None</span></code>.</p>
+<p><em>This is the only method an authentication backend has to implement.</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">member_of(self):</code></dt>
+<dd><p>Will check which memebers the currently logged in user is a member of.
+If not logged in, will return an empty list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">is_logged_in(self):</code></dt>
+<dd><p>Returns True if there&#8217;s a user currently logged in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">login(self, user):</code></dt>
+<dd><p>Stores the provided user object as part of the HTTP session</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">logout(self):</code></dt>
+<dd><p>Clears the current session.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">get_forbidden_url(self):</code></dt>
+<dd><p>Returns a URL for a &#8220;Forbidden&#8221; page, in case a users tries a forbidden action</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">get_login_url(self, path):</code></dt>
+<dd><p>Returns a URL for the Login form page. If <code class="docutils literal"><span class="pre">path</span></code> is provided, it will be passed to the login page, which will redirect to it upon successful login.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="the-user-object">
+<h3>The User object<a class="headerlink" href="#the-user-object" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="gru.plugins.auth.User">
+<em class="property">class </em><code class="descclassname">gru.plugins.auth.</code><code class="descname">User</code><a class="headerlink" href="#gru.plugins.auth.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a logged in user. Has a username, real name, an optional list of groups and optional metadata</p>
+<dl class="method">
+<dt>
+<code class="descname">__init__(self, username, name, groups=None, user_data=None):</code></dt>
+<dd><p>Create a new user object. It will be serialized and stored as part of the session.</p>
+<p><code class="docutils literal"><span class="pre">username</span></code> - The username used during authentication.</p>
+<p><code class="docutils literal"><span class="pre">name</span></code> - The user&#8217;s full name.</p>
+<p><code class="docutils literal"><span class="pre">groups</span></code> - A list of strings describing the groups this user is a member of. Optional.</p>
+<p><code class="docutils literal"><span class="pre">user_data</span></code> - A dictionary of additional metadata we want to store about this user. Optional.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Developing Plugins</a><ul>
+<li><a class="reference internal" href="#plugin-architecture-overview">Plugin Architecture Overview</a></li>
+<li><a class="reference internal" href="#host-widgets">Host Widgets</a></li>
+<li><a class="reference internal" href="#page-plugins">Page Plugins</a></li>
+<li><a class="reference internal" href="#inventory-providers">Inventory Providers</a><ul>
+<li><a class="reference internal" href="#host-hostcategory-and-hostlist">Host, HostCategory and HostList</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authentication-backends">Authentication Backends</a><ul>
+<li><a class="reference internal" href="#the-user-object">The User object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="plugins.html" title="previous chapter">Using plugins</a></li>
+      <li>Next: <a href="configuration.html" title="next chapter">Configuration Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/plugin_dev.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, SimilarWeb LTD.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/plugin_dev.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

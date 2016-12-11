@@ -1,0 +1,76 @@
+---
+flask:
+  # Keep this one random. used by the session system.
+  secret_key: 'usesomethingreallyrandomplease'
+
+# App related configuration
+inventory:
+  provider: gru.contrib.inventory.providers.ElasticSearchProvider
+  config:
+    index: inventory-facter
+    hosts:
+      - http://elasticsearch-01.internal:9200
+      - http://elasticsearch-02.internal:9200
+      - http://elasticsearch-03.internal:9200
+    timeout_seconds: 30  
+  default_result_size: 50
+
+  # These are the inventory document fields
+  # used in the app's navbar and main screen.
+  # They are used to categorize the hosts into groups
+  group_by:
+    - field: role
+      title: Role
+    - field: dc
+      title: DC
+    - field: environment
+      title: Environment
+    - field: os.name  # Nested fields are supported
+      title: OS
+  
+  # if this is set, sort lists of hosts by this field by default
+  host_table_sort_by: fqdn
+  host_display_name_field: fqdn
+
+  # Used whenever we display a table of multiple hosts
+  host_table_fields:
+    - field: role
+      title: Role
+    - field: dc
+      title: DC
+    - field: environment
+      title: Environment
+    - field: os.name
+      title: OS
+    - field: os.release.full
+      title: Version
+    - field: ipaddress_private
+      title: IP Address
+    - field: memorysize
+      title: Mem
+    - field: processorcount
+      title: CPUs
+  
+  # These are displayed in the host information page
+  host_info_fields:
+    - field: role
+      title: Role
+    - field: dc
+      title: DC
+    - field: environment
+      title: Environment
+    - field: os.name
+      title: OS
+    - field: os.release.full
+      title: OS version
+    - field: ipaddress_private
+      title: Private IP
+    - field: ipaddress_public
+      title: Public IP
+    - field: memorysize
+      title: Memory
+    - field: processorcount
+      title: CPUs
+    - field: productname
+      title: Machine
+
