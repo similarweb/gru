@@ -78,5 +78,5 @@ Assuming you've already created a configuration file and named it `gru.yaml`, si
 
 ### Where to go from here
 
-For more information on running, configuring and extending GRU with plugins, check out http://gru.readthedocs.com/
+For more information on running, configuring and extending GRU with plugins, check out http://gru.readthedocs.io/
 
