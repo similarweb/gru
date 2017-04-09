@@ -5,6 +5,10 @@ Authentication and Authorization
 
 GRU supports pluggable authentication and authorization.
 
+
+Authorization
+-------------
+
 To make things simple, authorization is done via user groups: a plugin can configure an ``allowed_groups`` variable
 that lists group names that have authorization to use the plugin.
 
@@ -58,6 +62,4 @@ Here's a snippet of such a configuration:
 Writing your own
 ----------------
 
-Writing an authentication backend is covered under :ref:`Writing your own authentication backends <plugin_dev_auth_backends>`
-
-
+Writing an authentication and authorization backends is covered under :ref:`Writing your own authentication backends <plugin_dev_auth_backends>`

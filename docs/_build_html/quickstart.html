@@ -26,7 +26,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="top" title="gru 0.1.0 documentation" href="index.html" />
-    <link rel="next" title="Configuration" href="configuration.html" />
+    <link rel="next" title="Inventory Providers" href="inventory.html" />
     <link rel="prev" title="Welcome to GRU’s documentation!" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -47,8 +47,9 @@
 <span id="quickstart"></span><h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>There are two ways to get started with GRU: Either clone the project and run the python server</p>
-<p>We recommend using the Docker image, since it eliminates the need to install all the different python and OS dependencies.</p>
+<p>There are two ways to get started with GRU: Either clone the project and run the python server -
+or run it using the the Docker image.</p>
+<p>We recommend using Docker, since it eliminates the need to install all the different python and OS dependencies.</p>
 <p>If you plan on contributing or simply hacking on GRU itself, you should probably use the local server instead.
 Keep in mind that GRU provides a pretty flexible plugin system. You can develop your own plugins and keep using the docker image.</p>
 </div>
@@ -114,17 +115,25 @@ and optionally how to authenticate and authorize users as well as set other conf
 </div>
 <div class="section" id="running-using-docker">
 <h2>Running using Docker<a class="headerlink" href="#running-using-docker" title="Permalink to this headline">¶</a></h2>
-<p>Assuming you already have a yaml configuration file, all we need to do is run the docker image:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ docker run -d gru:latest <span class="se">\</span>
-      -v <span class="nv">$PWD</span>/gru.yaml:/etc/gru.yaml <span class="se">\</span>
-      -p 5000:5000
+<p>Assuming you already have a yaml configuration file named <code class="docutils literal"><span class="pre">gru.yaml</span></code>, all we need to do is run the docker image:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ docker run --rm -it <span class="se">\</span>
+    -v <span class="nv">$PWD</span>:/etc/gru <span class="se">\</span>
+    -e <span class="nv">GRU_SETTINGS</span><span class="o">=</span>/etc/gru/gru.yaml <span class="se">\</span>
+    -e <span class="s2">&quot;AWS_ACCESS_KEY_ID=AKXXXXXXXXXXXXXXXXXX&quot;</span> <span class="se">\ </span> <span class="c1"># Set this to your AWS keys</span>
+    -e <span class="s2">&quot;AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="se">\</span>
+    -p 5000:5000 <span class="se">\</span>
+    similarweb/gru:latest
 </pre></div>
 </div>
 <p>If you are using custom plugins, simply mount the module directory and reflect that in your settings file:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>$ docker run -d gru:latest <span class="se">\</span>
-  -v <span class="nv">$PWD</span>/gru.yaml:/etc/gru.yaml <span class="se">\</span>
-  -v /path/to/plugins:/opt/gru-plugins <span class="se">\</span>
-  -p 5000:5000
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ docker run --rm -it <span class="se">\</span>
+    -v <span class="nv">$PWD</span>:/etc/gru <span class="se">\</span>
+    -e <span class="nv">GRU_SETTINGS</span><span class="o">=</span>/etc/gru/gru.yaml <span class="se">\</span>
+    -e <span class="s2">&quot;AWS_ACCESS_KEY_ID=AKXXXXXXXXXXXXXXXXXX&quot;</span> <span class="se">\ </span> <span class="c1"># Set this to your AWS keys</span>
+    -e <span class="s2">&quot;AWS_SECRET_ACCESS_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&quot;</span> <span class="se">\</span>
+    -v /path/to/plugins:/opt/gru-plugins <span class="se">\</span>
+    -p 5000:5000 <span class="se">\</span>
+    similarweb/gru:latest
 </pre></div>
 </div>
 <p>This will automatically pull the gru image from docker hub, and run a server using the <code class="docutils literal"><span class="pre">gru.yaml</span></code> settings file.</p>
@@ -179,7 +188,7 @@ Preferably, this step should be done in a <a class="reference external" href="ht
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="index.html" title="previous chapter">Welcome to GRU&#8217;s documentation!</a></li>
-      <li>Next: <a href="configuration.html" title="next chapter">Configuration</a></li>
+      <li>Next: <a href="inventory.html" title="next chapter">Inventory Providers</a></li>
   </ul></li>
 </ul>
 </div>

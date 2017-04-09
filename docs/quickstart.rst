@@ -7,9 +7,10 @@ Quick Start
 Installation
 ------------
 
-There are two ways to get started with GRU: Either clone the project and run the python server
+There are two ways to get started with GRU: Either clone the project and run the python server -
+or run it using the the Docker image.
 
-We recommend using the Docker image, since it eliminates the need to install all the different python and OS dependencies.
+We recommend using Docker, since it eliminates the need to install all the different python and OS dependencies.
 
 If you plan on contributing or simply hacking on GRU itself, you should probably use the local server instead.
 Keep in mind that GRU provides a pretty flexible plugin system. You can develop your own plugins and keep using the docker image.

@@ -46,8 +46,11 @@
   <div class="section" id="authentication-and-authorization">
 <span id="authentication"></span><h1>Authentication and Authorization<a class="headerlink" href="#authentication-and-authorization" title="Permalink to this headline">¶</a></h1>
 <p>GRU supports pluggable authentication and authorization.</p>
+<div class="section" id="authorization">
+<h2>Authorization<a class="headerlink" href="#authorization" title="Permalink to this headline">¶</a></h2>
 <p>To make things simple, authorization is done via user groups: a plugin can configure an <code class="docutils literal"><span class="pre">allowed_groups</span></code> variable
 that lists group names that have authorization to use the plugin.</p>
+</div>
 <div class="section" id="configuring-an-authentication-backend">
 <h2>Configuring an Authentication Backend<a class="headerlink" href="#configuring-an-authentication-backend" title="Permalink to this headline">¶</a></h2>
 <p>Configuring the Authentication backend is done via the <code class="docutils literal"><span class="pre">authentication.backend</span></code> and <code class="docutils literal"><span class="pre">authentication.config</span></code> configuration parameters.
@@ -84,7 +87,7 @@ and refer to the <a class="reference internal" href="configuration.html#config-p
 </div>
 <div class="section" id="writing-your-own">
 <h2>Writing your own<a class="headerlink" href="#writing-your-own" title="Permalink to this headline">¶</a></h2>
-<p>Writing an authentication backend is covered under <a class="reference internal" href="plugin_dev.html#plugin-dev-auth-backends"><span class="std std-ref">Writing your own authentication backends</span></a></p>
+<p>Writing an authentication and authorization backends is covered under <a class="reference internal" href="plugin_dev.html#plugin-dev-auth-backends"><span class="std std-ref">Writing your own authentication backends</span></a></p>
 </div>
 </div>
 
@@ -97,6 +100,7 @@ and refer to the <a class="reference internal" href="configuration.html#config-p
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Authentication and Authorization</a><ul>
+<li><a class="reference internal" href="#authorization">Authorization</a></li>
 <li><a class="reference internal" href="#configuring-an-authentication-backend">Configuring an Authentication Backend</a></li>
 <li><a class="reference internal" href="#dummy-authentication-backend">Dummy authentication backend</a></li>
 <li><a class="reference internal" href="#ldap-authentication-backend">LDAP authentication backend</a></li>
